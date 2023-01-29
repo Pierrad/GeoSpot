@@ -7,10 +7,13 @@ type HeaderType = {
 
 export const call = async (
   endpoint: string,
-  options: any = {}
+  options: any = {},
+  customHeaders: HeaderType = {}
 ): Promise<any> => {
   const url = `${APP.API_URL}/${endpoint}`
-  const headers: HeaderType = { 'Content-Type': 'application/json' }
+  const headers: HeaderType = {
+    ...customHeaders,
+  }
   const token = window.localStorage.getItem('token')
   if (token) {
     headers.Authorization = `Bearer ${token}`

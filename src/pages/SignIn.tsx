@@ -35,7 +35,7 @@ const SignIn = () => {
     if (isSuccess) {
       navigate('/dashboard')
     }
-  })
+  }, [isSuccess, navigate])
 
   return (
     <Layout>

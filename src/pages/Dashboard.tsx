@@ -4,8 +4,10 @@ import { QueryKey } from '../config/keys'
 import styled from '@emotion/styled'
 import { Box, Button } from '@mui/material'
 import { useQuery } from 'react-query'
+import { useNavigate } from 'react-router-dom'
 
 const Dashboard = () => {
+  const navigate = useNavigate()
   const { data } = useQuery(QueryKey.ME, me)
   const user = data?.user
 
@@ -14,8 +16,12 @@ const Dashboard = () => {
       <Box component="div" sx={{ m: 1 }}>
         <Title>Hello {user?.pseudo} 👋</Title>
         <CTAs>
-          <CreateCTA variant="contained">Create a new spot 📍</CreateCTA>
-          <ExploreCTA variant="contained">Explore the world 🌍</ExploreCTA>
+          <CreateCTA onClick={() => navigate('/create')}>
+            Add a new spot 📍
+          </CreateCTA>
+          <ExploreCTA onClick={() => navigate('/explore')}>
+            Explore the world 🌍
+          </ExploreCTA>
         </CTAs>
       </Box>
     </AuthLayout>

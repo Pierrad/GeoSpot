@@ -2,6 +2,8 @@ import Dashboard from './pages/Dashboard'
 import Home from './pages/Home'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
+import CreateSpot from './pages/CreateSpot'
+import Explore from './pages/Explore'
 import { appTheme } from './themes/theme'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -25,6 +27,14 @@ const router = createBrowserRouter([
   {
     path: '/dashboard',
     element: <Dashboard />,
+  },
+  {
+    path: '/create',
+    element: <CreateSpot />,
+  },
+  {
+    path: '/explore',
+    element: <Explore />,
   },
 ])
 
