@@ -1,3 +1,7 @@
+import Dashboard from './pages/Dashboard'
+import Home from './pages/Home'
+import SignIn from './pages/SignIn'
+import SignUp from './pages/SignUp'
 import { appTheme } from './themes/theme'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -8,7 +12,19 @@ const queryClient = new QueryClient()
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <div>Hello world!</div>,
+    element: <Home />,
+  },
+  {
+    path: '/signin',
+    element: <SignIn />,
+  },
+  {
+    path: '/signup',
+    element: <SignUp />,
+  },
+  {
+    path: '/dashboard',
+    element: <Dashboard />,
   },
 ])
 
