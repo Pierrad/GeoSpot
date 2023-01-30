@@ -1,14 +1,5 @@
 import { useEffect, useState } from 'react'
-
-export type Position = {
-  latitude: number
-  longitude: number
-}
-
-export type PositionError = {
-  code: number
-  message: string
-}
+import { Position, PositionError } from '../types/types'
 
 const usePosition = () => {
   const [position, setPosition] = useState<Position | null>(null)

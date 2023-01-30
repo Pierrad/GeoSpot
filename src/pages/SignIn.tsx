@@ -8,34 +8,8 @@ import { useMutation, useQueryClient } from 'react-query'
 import { Link, useNavigate } from 'react-router-dom'
 
 const SignIn = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const queryClient = useQueryClient()
-  const navigate = useNavigate()
-  const { isLoading, mutate, isSuccess } = useMutation(login, {
-    onSuccess: () => queryClient.invalidateQueries(QueryKey.ME),
-  })
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    if (name === 'email') {
-      setEmail(value)
-    } else if (name === 'password') {
-      setPassword(value)
-    }
-  }
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const user = { email, password }
-    mutate(user)
-  }
-
-  useEffect(() => {
-    if (isSuccess) {
-      navigate('/dashboard')
-    }
-  }, [isSuccess, navigate])
+  const { email, password, handleChange, handleSubmit, isLoading } =
+    useSignInForm()
 
   return (
     <Layout>
@@ -88,6 +62,47 @@ const SignIn = () => {
       </Box>
     </Layout>
   )
+}
+
+const useSignInForm = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
+  const { isLoading, mutate, data } = useMutation(login, {
+    onSuccess: () => queryClient.invalidateQueries(QueryKey.ME),
+  })
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    if (name === 'email') {
+      setEmail(value)
+    } else if (name === 'password') {
+      setPassword(value)
+    }
+  }
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const user = { email, password }
+    mutate(user)
+  }
+
+  console.log(data)
+
+  useEffect(() => {
+    if (data?.token) {
+      navigate('/dashboard')
+    }
+  }, [data?.token, navigate])
+
+  return {
+    email,
+    password,
+    handleChange,
+    handleSubmit,
+    isLoading,
+  }
 }
 
 export default SignIn

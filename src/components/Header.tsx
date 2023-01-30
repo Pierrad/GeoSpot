@@ -3,6 +3,21 @@ import PersonPinIcon from '@mui/icons-material/PersonPin'
 import { IconButton } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
+const Header = () => {
+  const navigate = useNavigate()
+  return (
+    <Head>
+      <LogoContainer onClick={() => navigate('/')}>
+        <Logo src="/geospot.png" alt="GeoSpot" />
+        <Title>GeoSpot</Title>
+      </LogoContainer>
+      <IconButton onClick={() => navigate('/dashboard')}>
+        <PersonPinIcon fontSize="large" color="action" />
+      </IconButton>
+    </Head>
+  )
+}
+
 const Head = styled.header`
   display: flex;
   justify-content: space-between;
@@ -26,20 +41,5 @@ const Logo = styled.img`
   height: 50px;
   margin-right: 0.5rem;
 `
-
-const Header = () => {
-  const navigate = useNavigate()
-  return (
-    <Head>
-      <LogoContainer onClick={() => navigate('/')}>
-        <Logo src="/geospot.png" alt="GeoSpot" />
-        <Title>GeoSpot</Title>
-      </LogoContainer>
-      <IconButton onClick={() => navigate('/dashboard')}>
-        <PersonPinIcon fontSize="large" color="action" />
-      </IconButton>
-    </Head>
-  )
-}
 
 export default Header

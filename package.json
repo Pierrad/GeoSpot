@@ -16,8 +16,10 @@
     "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.117",
     "@mui/material": "^5.11.6",
+    "mapbox-gl": "^2.12.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-map-gl": "^7.0.21",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.8.0"
   },

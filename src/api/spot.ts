@@ -8,3 +8,45 @@ export const addSpot = async (data: any) => {
 
   return response
 }
+
+export const addDiscoveredSpot = async (data: any) => {
+  const response = await call('place/discovered', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: data,
+  })
+
+  return response
+}
+
+export const getDiscoveredSpots = async () => {
+  const response = await call('user/discovered')
+
+  return response
+}
+
+export const getCreatedSpots = async () => {
+  const response = await call('user/created')
+
+  return response
+}
+
+export const getDiscoveredSpot = async (id: string) => {
+  const response = await call(`user/discovered/${id}`)
+
+  return response
+}
+
+export const getCreatedSpot = async (id: string) => {
+  const response = await call(`user/created/${id}`)
+
+  return response
+}
+
+export const getSpot = async (id: string) => {
+  const response = await call(`place/${id}`)
+
+  return response
+}
