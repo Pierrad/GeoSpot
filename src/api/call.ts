@@ -7,17 +7,22 @@ type HeaderType = {
 
 export const call = async (
   endpoint: string,
-  options: any = {},
-  customHeaders: HeaderType = {}
+  options: any = {}
 ): Promise<any> => {
   const url = `${APP.API_URL}/${endpoint}`
   const headers: HeaderType = {
-    ...customHeaders,
+    ...options.headers,
   }
   const token = window.localStorage.getItem('token')
+
   if (token) {
     headers.Authorization = `Bearer ${token}`
   }
+
+  if (options.method === 'POST' || options.method === 'PUT') {
+    headers['Content-Type'] = 'application/json'
+  }
+
   const response = await fetch(url, { headers, ...options })
   try {
     return await response.json()

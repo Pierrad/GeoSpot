@@ -1,40 +1,32 @@
 import styled from '@emotion/styled'
 import { Box } from '@mui/material'
-import { useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { getCreatedSpot, getDiscoveredSpot } from '../../api/spot'
+import { useNavigate, useParams } from 'react-router-dom'
+import { getCreatedSpot } from '../../api/spot'
 import AuthLayout from '../../components/AuthLayout'
 import BackButton from '../../components/BackButton'
+import MapView from '../../components/Map'
 import { QueryKey } from '../../config/keys'
 import { Spot as SpotType } from '../../types/types'
+import { getImageUrl } from '../../utils/api'
 
-const Spot = () => {
+const CreatedSpotDetail = () => {
   const navigate = useNavigate()
   const { id } = useParams()
-  const [searchParams] = useSearchParams()
-  const [isCreator, setIsCreator] = useState(false)
-  const [isExplorer, setIsExplorer] = useState(false)
-  if (!id) navigate('/dashboard')
 
-  useEffect(() => {
-    if (searchParams.get('creator')) setIsCreator(true)
-    if (searchParams.get('explorer')) setIsExplorer(true)
-  }, [searchParams])
+  if (!id) navigate('/dashboard')
 
   const {
     data: spot,
     isLoading,
     error,
-  } = useQuery(QueryKey.GET_SPOT, () =>
-    isCreator ? getCreatedSpot(id!) : getDiscoveredSpot(id!)
-  )
+  } = useQuery(QueryKey.GET_CREATED_SPOT, () => getCreatedSpot(id!))
 
   if (isLoading) return <p>Loading...</p>
 
   if (error) navigate('/dashboard')
 
-  const { name }: SpotType = spot
+  const { name, image, geolocation, created_at }: SpotType = spot
 
   return (
     <AuthLayout>
@@ -44,9 +36,12 @@ const Spot = () => {
           {name}
         </Title>
         <Subtitle>
-          {isCreator && `You created this spot on ${new Date(spot.created_at)}`}
-          {isExplorer && `You discovered this spot on ${spot.date}`}
+          {`You created this spot on ${new Date(created_at).toLocaleDateString(
+            'en-US'
+          )}`}
         </Subtitle>
+        <Image src={getImageUrl(image)} alt={name} />
+        <MapView marker={geolocation} />
       </Box>
     </AuthLayout>
   )
@@ -62,4 +57,8 @@ const Subtitle = styled.p`
   margin: 0.5rem 0;
 `
 
-export default Spot
+const Image = styled.img`
+  width: 100%;
+`
+
+export default CreatedSpotDetail

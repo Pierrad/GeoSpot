@@ -12,9 +12,6 @@ export const addSpot = async (data: any) => {
 export const addDiscoveredSpot = async (data: any) => {
   const response = await call('place/discovered', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: data,
   })
 
@@ -47,6 +44,16 @@ export const getCreatedSpot = async (id: string) => {
 
 export const getSpot = async (id: string) => {
   const response = await call(`place/${id}`)
+
+  return response
+}
+
+export const getAroundSpots = async (data: any) => {
+  console.log(data)
+  const response = await call('place/around', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
 
   return response
 }

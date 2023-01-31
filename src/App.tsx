@@ -1,11 +1,12 @@
 import Dashboard from './pages/Dashboard'
 import Home from './pages/Home'
-import SignIn from './pages/SignIn'
-import SignUp from './pages/SignUp'
+import SignIn from './pages/auth/SignIn'
+import SignUp from './pages/auth/SignUp'
 import CreateSpot from './pages/spot/CreateSpot'
-import CreatedSpot from './pages/spot/CreatedSpot'
-import DiscoveredSpot from './pages/spot/DiscoveredSpot'
-import Explore from './pages/Explore'
+import CreatedSpotDetail from './pages/spot/CreatedSpotDetail'
+import DiscoveredSpotDetail from './pages/spot/DiscoveredSpotDetail'
+import ExploreList from './pages/explore/ExploreList'
+import Explore from './pages/explore/Explore'
 import { appTheme } from './themes/theme'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -36,15 +37,19 @@ const router = createBrowserRouter([
   },
   {
     path: '/explore',
+    element: <ExploreList />,
+  },
+  {
+    path: '/explore/:id',
     element: <Explore />,
   },
   {
     path: '/created/:id',
-    element: <CreatedSpot />,
+    element: <CreatedSpotDetail />,
   },
   {
     path: '/discovered/:id',
-    element: <DiscoveredSpot />,
+    element: <DiscoveredSpotDetail />,
   },
 ])
 

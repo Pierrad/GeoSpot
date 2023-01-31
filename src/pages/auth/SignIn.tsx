@@ -1,15 +1,15 @@
-import { register } from '../api/auth'
-import Layout from '../components/Layout'
-import { QueryKey } from '../config/keys'
+import { login } from '../../api/auth'
+import Layout from '../../components/Layout'
+import { QueryKey } from '../../config/keys'
 import { LoadingButton } from '@mui/lab'
 import { Box, TextField } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useMutation, useQueryClient } from 'react-query'
 import { Link, useNavigate } from 'react-router-dom'
 
-const SignUp = () => {
-  const { pseudo, email, password, handleChange, handleSubmit, isLoading } =
-    useSignUpForm()
+const SignIn = () => {
+  const { email, password, handleChange, handleSubmit, isLoading } =
+    useSignInForm()
 
   return (
     <Layout>
@@ -22,20 +22,8 @@ const SignUp = () => {
           padding: 2,
         }}
       >
-        <h1>Sign up</h1>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="pseudo"
-            label="Pseudo"
-            name="pseudo"
-            autoComplete="pseudo"
-            autoFocus
-            value={pseudo}
-            onChange={handleChange}
-          />
+        <h1>Sign in</h1>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
@@ -44,6 +32,7 @@ const SignUp = () => {
             label="Email Address"
             name="email"
             autoComplete="email"
+            autoFocus
             value={email}
             onChange={handleChange}
           />
@@ -66,22 +55,21 @@ const SignUp = () => {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Sign up
+            Sign in
           </LoadingButton>
-          <Link to="/signin">Already have an account? Sign in</Link>
+          <Link to="/signup">Don&apos;t have an account? Sign Up</Link>
         </Box>
       </Box>
     </Layout>
   )
 }
 
-const useSignUpForm = () => {
-  const [pseudo, setPseudo] = useState('')
+const useSignInForm = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const { isLoading, mutate, data } = useMutation(register, {
+  const { isLoading, mutate, data } = useMutation(login, {
     onSuccess: () => queryClient.invalidateQueries(QueryKey.ME),
   })
 
@@ -91,16 +79,16 @@ const useSignUpForm = () => {
       setEmail(value)
     } else if (name === 'password') {
       setPassword(value)
-    } else if (name === 'pseudo') {
-      setPseudo(value)
     }
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const user = { pseudo, email, password }
+    const user = { email, password }
     mutate(user)
   }
+
+  console.log(data)
 
   useEffect(() => {
     if (data?.token) {
@@ -109,7 +97,6 @@ const useSignUpForm = () => {
   }, [data?.token, navigate])
 
   return {
-    pseudo,
     email,
     password,
     handleChange,
@@ -118,4 +105,4 @@ const useSignUpForm = () => {
   }
 }
 
-export default SignUp
+export default SignIn

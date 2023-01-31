@@ -8,6 +8,12 @@ export type PositionError = {
   message: string
 }
 
+export type Orientation = {
+  alpha: number
+  beta: number
+  gamma: number
+}
+
 export type Spot = {
   id: string
   name: string

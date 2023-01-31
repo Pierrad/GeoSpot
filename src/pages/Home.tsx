@@ -45,6 +45,12 @@ const Image = styled.img`
   width: 125%;
   bottom: -5%;
   left: -40%;
+
+  @media (min-width: 768px) {
+    width: 100%;
+    bottom: -50%;
+    left: -30%;
+  }
 `
 
 const CTA = styled(Button)`

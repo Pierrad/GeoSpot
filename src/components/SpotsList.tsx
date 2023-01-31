@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { DiscoveredSpot, Spot } from '../types/types'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { useNavigate } from 'react-router-dom'
+import SpotItem from './SpotItem'
 
 type SpotsListProps = {
   className?: string
@@ -25,16 +25,13 @@ const SpotsList = (props: SpotsListProps) => {
 
   const renderSpot = (spot: Spot) => {
     return (
-      <CustomSpot
+      <SpotItem
+        spot={spot}
         key={spot.id}
         onClick={() =>
           navigate(`/${isSpot ? 'created' : 'discovered'}/${spot.id}`)
         }
-      >
-        <SpotPin>📍</SpotPin>
-        <SpotName>{spot.name}</SpotName>
-        <Chevron />
-      </CustomSpot>
+      />
     )
   }
 
@@ -80,31 +77,6 @@ const CustomSpots = styled.ul`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-`
-
-const CustomSpot = styled.li`
-  list-style: none;
-  display: flex;
-  align-items: center;
-  width: 49%;
-  justify-content: space-between;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-`
-
-const SpotPin = styled.span`
-  font-size: 2rem;
-`
-
-const SpotName = styled.p`
-  font-size: 1.2rem;
-  font-weight: 700;
-  margin: 0;
-`
-
-const Chevron = styled(ChevronRightIcon)`
-  font-size: 2rem;
 `
 
 export default SpotsList

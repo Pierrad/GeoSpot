@@ -31,7 +31,11 @@ const usePosition = () => {
     return () => geo.clearWatch(watcher)
   }, [])
 
-  return { position, error }
+  return {
+    position,
+    error,
+    isAvailable: 'geolocation' in navigator && position !== null,
+  }
 }
 
 export default usePosition

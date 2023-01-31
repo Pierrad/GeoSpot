@@ -3,9 +3,6 @@ import { call } from './call'
 export const register = async (data: any) => {
   const response = await call('register', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(data),
   })
 
@@ -23,9 +20,6 @@ export const register = async (data: any) => {
 export const login = async (data: any) => {
   const response = await call('login', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(data),
   })
 
