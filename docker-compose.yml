@@ -1,0 +1,27 @@
+version: '3'
+services:
+    web:
+        build: 
+            context: ./
+            dockerfile: Dockerfile
+        volumes:
+            - /usr/src/web/node_modules
+    nginx:
+        container_name: nginx
+        restart: unless-stopped
+        image: nginx
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./certbot/conf:/etc/letsencrypt
+            - ./certbot/www:/var/www/certbot
+    certbot:
+        image: certbot/certbot
+        container_name: certbot
+        volumes: 
+            - ./certbot/conf:/etc/letsencrypt
+            - ./certbot/www:/var/www/certbot
+        command: certonly --webroot -w /var/www/certbot --force-renewal --email pierreadrien.vasseur@gmail.com -d pierrad.fr --agree-tos
+
