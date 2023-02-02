@@ -26,7 +26,9 @@ const usePosition = () => {
     }
 
     const geo = navigator.geolocation
-    const watcher = geo.watchPosition(onChange, onError)
+    const watcher = geo.watchPosition(onChange, onError, {
+      enableHighAccuracy: true,
+    })
 
     return () => geo.clearWatch(watcher)
   }, [])

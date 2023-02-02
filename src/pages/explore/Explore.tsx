@@ -14,32 +14,35 @@ import Webcam from 'react-webcam'
 import * as THREE from 'three'
 import { useThree, useFrame, Canvas } from '@react-three/fiber'
 import useOrientation from '../../hooks/useOrientation'
-import { Orientation, Spot } from '../../types/types'
+import { Orientation, Position, Spot } from '../../types/types'
+import MapView from '../../components/Map'
 
 type ArrowProps = {
   spot: Spot
   orientation: Orientation
+  position: Position
 }
 
 const Arrow = (props: ArrowProps) => {
-  const { spot, orientation } = props
+  const { spot, orientation, position } = props
   const arrowRef = useRef<THREE.Mesh | null>(null)
 
   const { longitude, latitude } = spot.geolocation
-  const { alpha, beta, gamma } = orientation
+  const { alpha } = orientation
 
   useFrame(() => {
-    if (arrowRef.current) {
-      const spotDirection = new THREE.Vector3(
-        Math.cos(latitude) * Math.cos(longitude),
-        Math.sin(latitude),
-        Math.cos(latitude) * Math.sin(longitude)
-      ).normalize()
+    if (!arrowRef.current) return
 
-      arrowRef.current.rotation.y = -longitude
+    const calculateAngle = calculateBearing(
+      position?.latitude,
+      position?.longitude,
+      latitude,
+      longitude
+    )
 
-      arrowRef.current.lookAt(spotDirection)
-    }
+    const angle = calculateAngle - alpha + 210
+
+    arrowRef.current.rotation.z = angle * (Math.PI / 180)
   })
 
   return (
@@ -67,6 +70,8 @@ const Explore = () => {
   const { position } = usePosition()
   const orientation = useOrientation()
   const [distance, setDistance] = useState<number>(0)
+  const [angle, setAngle] = useState<number>(0)
+
   const webcamRef = useRef<Webcam>(null)
   const videoRef = useRef<THREE.VideoTexture>()
 
@@ -87,6 +92,20 @@ const Explore = () => {
       videoRef.current = new THREE.VideoTexture(webcamRef.current.video)
     }
   }, [])
+
+  useEffect(() => {
+    if (orientation.alpha === undefined) return
+    if (!position) return
+
+    const calculateAngle = calculateBearing(
+      position?.latitude,
+      position?.longitude,
+      spot?.geolocation.latitude,
+      spot?.geolocation.longitude
+    )
+
+    setAngle(calculateAngle + orientation.alpha + 30)
+  }, [position, spot?.geolocation, orientation])
 
   if (!id) navigate('/dashboard')
   if (isLoading) return <AuthLayout>Loading...</AuthLayout>
@@ -130,13 +149,38 @@ const Explore = () => {
                   : 1,
             }}
           >
-            <Arrow spot={spot!} orientation={orientation} />
+            <Arrow spot={spot!} orientation={orientation} position={position} />
             {videoRef.current && <VideoPlane video={videoRef.current} />}
           </MyCanvas>
         </Scene>
+
+        <CompassContainer>
+          <CompassDialer>
+            <CompassArrow
+              style={{
+                transform: `rotate(${angle}deg)`,
+              }}
+            />
+            <CompassTarget>Target</CompassTarget>
+          </CompassDialer>
+          <CompassLabel>Compass</CompassLabel>
+        </CompassContainer>
+
+        <MapView marker={spot?.geolocation} />
       </Wrapper>
     </AuthLayout>
   )
+}
+
+function calculateBearing(
+  lat1: number,
+  lng1: number,
+  lat2: number,
+  lng2: number
+): number {
+  const angle = Math.atan2(lng2 - lng1, lat2 - lat1) // radians
+  const bearing = (angle * 180) / Math.PI // convert to degrees
+  return (bearing + 360) % 360 // normalize
 }
 
 const Title = styled.h1`
@@ -165,6 +209,54 @@ const Scene = styled.div<{ height: number }>`
 const MyCanvas = styled(Canvas)`
   width: 100%;
   height: 100%;
+`
+
+const CompassContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`
+
+const CompassDialer = styled.div`
+  position: relative;
+  width: 300px;
+  height: 300px;
+  border: 10px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+`
+
+const CompassArrow = styled.div`
+  position: absolute;
+  top: calc(50% - 15px);
+  left: calc(50% - 15px);
+  width: 30px;
+  height: 30px;
+  transform-origin: center;
+  transform: rotate(0deg);
+  border-bottom: 2px solid red;
+  border-right: 2px solid rgba(0, 0, 0, 0.1);
+  border-top: 2px solid rgba(0, 0, 0, 0.1);
+  border-left: 2px solid rgba(0, 0, 0, 0.1);
+`
+
+const CompassTarget = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+`
+
+const CompassLabel = styled.div`
+  margin-top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 `
 
 export default Explore
