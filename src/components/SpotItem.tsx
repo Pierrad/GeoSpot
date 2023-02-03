@@ -38,6 +38,7 @@ const CustomSpot = styled.li`
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
 `
 
 const SpotPin = styled.span`

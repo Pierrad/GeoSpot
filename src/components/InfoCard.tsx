@@ -40,6 +40,7 @@ const Value = styled.h1<{ color?: string }>`
 const Text = styled.p`
   font-size: 1.2rem;
   margin: 0;
+  text-align: center;
 `
 
 export default InfoCard

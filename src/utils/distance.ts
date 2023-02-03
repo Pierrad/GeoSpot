@@ -19,3 +19,15 @@ export const getDistance = (geolocationA: Position, geolocationB: Position) => {
 
   return d.toFixed(2)
 }
+
+// Calculate bearing angle between two points
+export const calculateBearing = (
+  lat1: number,
+  lng1: number,
+  lat2: number,
+  lng2: number
+) => {
+  const angle = Math.atan2(lng2 - lng1, lat2 - lat1) // radians
+  const bearing = (angle * 180) / Math.PI // convert to degrees
+  return (bearing + 360) % 360 // normalize
+}

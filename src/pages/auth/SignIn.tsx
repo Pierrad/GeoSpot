@@ -88,8 +88,6 @@ const useSignInForm = () => {
     mutate(user)
   }
 
-  console.log(data)
-
   useEffect(() => {
     if (data?.token) {
       navigate('/dashboard')

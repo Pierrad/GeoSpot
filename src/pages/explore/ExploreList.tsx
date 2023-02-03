@@ -31,8 +31,6 @@ const ExploreList = () => {
 
   if (!position) return <AuthLayout>Position not available</AuthLayout>
 
-  console.log('data', data)
-
   return (
     <AuthLayout>
       <Title>

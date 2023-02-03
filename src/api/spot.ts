@@ -12,7 +12,7 @@ export const addSpot = async (data: any) => {
 export const addDiscoveredSpot = async (data: any) => {
   const response = await call('place/discovered', {
     method: 'POST',
-    body: data,
+    body: JSON.stringify(data),
   })
 
   return response
@@ -49,7 +49,6 @@ export const getSpot = async (id: string) => {
 }
 
 export const getAroundSpots = async (data: any) => {
-  console.log(data)
   const response = await call('place/around', {
     method: 'POST',
     body: JSON.stringify(data),

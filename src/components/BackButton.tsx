@@ -2,10 +2,18 @@ import { IconButton } from '@mui/material'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import { useNavigate } from 'react-router-dom'
 
-const BackButton = () => {
+type BackButtonProps = {
+  onClick?: () => void
+}
+
+const BackButton = (props: BackButtonProps) => {
+  const { onClick } = props
   const navigate = useNavigate()
   return (
-    <IconButton onClick={() => navigate(-1)} sx={{ mb: 1 }}>
+    <IconButton
+      onClick={() => (onClick ? onClick() : navigate(-1))}
+      sx={{ mb: 1 }}
+    >
       <KeyboardBackspaceIcon />
     </IconButton>
   )

@@ -7,6 +7,7 @@ import CreatedSpotDetail from './pages/spot/CreatedSpotDetail'
 import DiscoveredSpotDetail from './pages/spot/DiscoveredSpotDetail'
 import ExploreList from './pages/explore/ExploreList'
 import Explore from './pages/explore/Explore'
+import Found from './pages/explore/Found'
 import { appTheme } from './themes/theme'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
   {
     path: '/discovered/:id',
     element: <DiscoveredSpotDetail />,
+  },
+  {
+    path: '/found/:id',
+    element: <Found />,
   },
 ])
 
