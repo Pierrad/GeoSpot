@@ -8,13 +8,15 @@ import { addSpot } from '../../api/spot'
 import AuthLayout from '../../components/AuthLayout'
 import usePosition from '../../hooks/usePosition'
 import BackButton from '../../components/BackButton'
+import Error from '../../components/Error'
 
 const CreateSpot = () => {
-  const { name, setName, image, setImage, handleSubmit, isLoading } =
+  const { name, setName, image, setImage, handleSubmit, isLoading, isError } =
     useCreateSpotForm()
 
   return (
     <AuthLayout>
+      {isError && <Error />}
       <Box component="div" sx={{ m: 1 }}>
         <Title>
           <BackButton />
@@ -66,7 +68,7 @@ const useCreateSpotForm = () => {
   const [name, setName] = useState('')
   const [image, setImage] = useState<File | null>(null)
   const { position } = usePosition()
-  const { isLoading, mutate, isSuccess } = useMutation(addSpot)
+  const { isLoading, mutate, isSuccess, isError } = useMutation(addSpot)
 
   useEffect(() => {
     if (isSuccess) {
@@ -96,6 +98,7 @@ const useCreateSpotForm = () => {
     setImage,
     handleSubmit,
     isLoading,
+    isError,
   }
 }
 

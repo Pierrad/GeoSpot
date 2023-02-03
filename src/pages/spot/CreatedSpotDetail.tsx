@@ -5,28 +5,21 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { getCreatedSpot } from '../../api/spot'
 import AuthLayout from '../../components/AuthLayout'
 import BackButton from '../../components/BackButton'
+import Loading from '../../components/Loading'
 import MapView from '../../components/Map'
 import { QueryKey } from '../../config/keys'
-import { Spot as SpotType } from '../../types/types'
 import { getImageUrl } from '../../utils/api'
 
 const CreatedSpotDetail = () => {
-  const navigate = useNavigate()
-  const { id } = useParams()
+  const { isLoading, name, created_at, image, geolocation } =
+    useCreatedSpotDetail()
 
-  if (!id) navigate('/dashboard')
-
-  const {
-    data: spot,
-    isLoading,
-    error,
-  } = useQuery(QueryKey.GET_CREATED_SPOT, () => getCreatedSpot(id!))
-
-  if (isLoading) return <p>Loading...</p>
-
-  if (error) navigate('/dashboard')
-
-  const { name, image, geolocation, created_at }: SpotType = spot
+  if (isLoading)
+    return (
+      <AuthLayout>
+        <Loading />
+      </AuthLayout>
+    )
 
   return (
     <AuthLayout>
@@ -45,6 +38,23 @@ const CreatedSpotDetail = () => {
       </Box>
     </AuthLayout>
   )
+}
+
+const useCreatedSpotDetail = () => {
+  const navigate = useNavigate()
+  const { id } = useParams()
+
+  if (!id) navigate('/dashboard')
+
+  const {
+    data: spot,
+    isLoading,
+    error,
+  } = useQuery(QueryKey.GET_CREATED_SPOT, () => getCreatedSpot(id!))
+
+  if (error) navigate('/dashboard')
+
+  return { isLoading, ...spot }
 }
 
 const Title = styled.h1`

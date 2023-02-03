@@ -7,7 +7,8 @@ type HeaderType = {
 
 export const call = async (
   endpoint: string,
-  options: any = {}
+  options: any = {},
+  isFormData = false
 ): Promise<any> => {
   const url = `${APP.API_URL}/${endpoint}`
   const headers: HeaderType = {
@@ -19,7 +20,7 @@ export const call = async (
     headers.Authorization = `Bearer ${token}`
   }
 
-  if (options.method === 'POST' || options.method === 'PUT') {
+  if ((options.method === 'POST' || options.method === 'PUT') && !isFormData) {
     headers['Content-Type'] = 'application/json'
   }
 

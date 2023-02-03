@@ -1,68 +1,78 @@
-/* eslint-disable react/no-unknown-property */
 import styled from '@emotion/styled'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
+import Webcam from 'react-webcam'
 import { getSpot } from '../../api/spot'
+import { QueryKey } from '../../config/keys'
+import useOrientation from '../../hooks/useOrientation'
+import usePosition from '../../hooks/usePosition'
+import { getDistance } from '../../utils/distance'
 import AuthLayout from '../../components/AuthLayout'
 import BackButton from '../../components/BackButton'
-import { QueryKey } from '../../config/keys'
-import usePosition from '../../hooks/usePosition'
-import { calculateBearing, getDistance } from '../../utils/distance'
-import Webcam from 'react-webcam'
-import * as THREE from 'three'
-import { useFrame, Canvas } from '@react-three/fiber'
-import useOrientation from '../../hooks/useOrientation'
-import { Orientation, Position, Spot } from '../../types/types'
+import Loading from '../../components/Loading'
+import ThreeArrow from '../../components/threejs/ThreeArrow'
+import ThreeCanvas from '../../components/threejs/ThreeCanvas'
 
-type ArrowProps = {
-  spot: Spot
-  orientation: Orientation
-  position: Position
-}
+const Explore = () => {
+  const { isLoading, position, orientation, spot, distance } = useExplore()
 
-const Arrow = (props: ArrowProps) => {
-  const { spot, orientation, position } = props
-  const arrowRef = useRef<THREE.Mesh | null>(null)
-
-  const { longitude, latitude } = spot.geolocation
-  const { alpha } = orientation
-
-  useFrame(() => {
-    if (!arrowRef.current) return
-
-    const calculateAngle = calculateBearing(
-      position?.latitude,
-      position?.longitude,
-      latitude,
-      longitude
+  if (isLoading)
+    return (
+      <AuthLayout>
+        <Loading />
+      </AuthLayout>
     )
 
-    const angle = calculateAngle - alpha + 210
-
-    arrowRef.current.rotation.z = angle * (Math.PI / 180)
-  })
+  if (!position)
+    return (
+      <AuthLayout>
+        <Loading message="We're looking for your position" />
+      </AuthLayout>
+    )
 
   return (
-    <mesh ref={arrowRef} position={[0, 2.5, 0]}>
-      <coneGeometry />
-      <meshBasicMaterial />
-    </mesh>
+    <AuthLayout>
+      <Title>
+        <BackButton />
+        {`You are looking for ${spot?.name}`}
+      </Title>
+      <Wrapper>
+        <Distance>{`You are ${distance} km away from ${spot?.name}`}</Distance>
+        <Scene>
+          <Webcam
+            audio={false}
+            videoConstraints={{
+              width: window.innerWidth,
+              height: 250,
+              facingMode: {
+                exact: 'environment',
+              },
+            }}
+          />
+          <Canvas>
+            <ThreeArrow
+              spot={spot!}
+              orientation={orientation}
+              position={position}
+            />
+          </Canvas>
+        </Scene>
+      </Wrapper>
+    </AuthLayout>
   )
 }
 
-const Explore = () => {
+const useExplore = () => {
   const navigate = useNavigate()
   const { id } = useParams()
   const { position } = usePosition()
   const orientation = useOrientation()
   const [distance, setDistance] = useState<number>(-1)
 
-  const {
-    data: spot,
-    isLoading,
-    error,
-  } = useQuery(QueryKey.GET_SPOT, () => getSpot(id!))
+  const { data: spot, isLoading } = useQuery(QueryKey.GET_SPOT, () =>
+    getSpot(id!)
+  )
 
   const checkIfFound = useCallback(() => {
     if (distance < 0.1 && distance > 0 && spot?.geolocation) {
@@ -87,40 +97,14 @@ const Explore = () => {
   }, [checkIfFound])
 
   if (!id) navigate('/dashboard')
-  if (isLoading) return <AuthLayout>Loading...</AuthLayout>
-  if (error) navigate('/dashboard')
-  if (!position) return <AuthLayout>Position not available</AuthLayout>
 
-  return (
-    <AuthLayout>
-      <Title>
-        <BackButton />
-        {`You are looking for ${spot?.name}`}
-      </Title>
-      <Wrapper>
-        <Distance>{`You are ${distance} km away from ${spot?.name}`}</Distance>
-        <Scene>
-          <Webcam
-            audio={false}
-            videoConstraints={{
-              width: window.innerWidth,
-              height: 250,
-              facingMode: {
-                exact: 'environment',
-              },
-            }}
-          />
-          <MyCanvas
-            camera={{
-              fov: 75,
-            }}
-          >
-            <Arrow spot={spot!} orientation={orientation} position={position} />
-          </MyCanvas>
-        </Scene>
-      </Wrapper>
-    </AuthLayout>
-  )
+  return {
+    isLoading,
+    position,
+    orientation,
+    spot,
+    distance,
+  }
 }
 
 const Title = styled.h1`
@@ -145,7 +129,7 @@ const Scene = styled.div`
   position: relative;
 `
 
-const MyCanvas = styled(Canvas)`
+const Canvas = styled(ThreeCanvas)`
   width: 100%;
   height: 100%;
   position: absolute !important;

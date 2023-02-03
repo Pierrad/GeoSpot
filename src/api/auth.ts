@@ -23,7 +23,7 @@ export const login = async (data: any) => {
     body: JSON.stringify(data),
   })
 
-  if (response.status === 401) {
+  if (response.status === '401') {
     throw new Error('Invalid credentials')
   }
 

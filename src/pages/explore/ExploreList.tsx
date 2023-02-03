@@ -4,32 +4,28 @@ import { useNavigate } from 'react-router-dom'
 import { getAroundSpots } from '../../api/spot'
 import AuthLayout from '../../components/AuthLayout'
 import BackButton from '../../components/BackButton'
+import Loading from '../../components/Loading'
 import SpotItem from '../../components/SpotItem'
 import { QueryKey } from '../../config/keys'
 import usePosition from '../../hooks/usePosition'
 import { Spot } from '../../types/types'
 
 const ExploreList = () => {
-  const { position, isAvailable } = usePosition()
-  const navigate = useNavigate()
-  const { data, isLoading } = useQuery(
-    isAvailable ? QueryKey.GET_AROUND_SPOTS : '',
-    () => {
-      if (position) {
-        return getAroundSpots({
-          geolocation: JSON.stringify(position),
-          radius: 1000,
-        })
-      }
-    },
-    {
-      enabled: isAvailable,
-    }
-  )
+  const { data, isLoading, position, navigate } = useExploreList()
 
-  if (isLoading) return <AuthLayout>Loading...</AuthLayout>
+  if (isLoading)
+    return (
+      <AuthLayout>
+        <Loading />
+      </AuthLayout>
+    )
 
-  if (!position) return <AuthLayout>Position not available</AuthLayout>
+  if (!position)
+    return (
+      <AuthLayout>
+        <Loading message="We're looking for your position" />
+      </AuthLayout>
+    )
 
   return (
     <AuthLayout>
@@ -50,6 +46,32 @@ const ExploreList = () => {
       </Spots>
     </AuthLayout>
   )
+}
+
+const useExploreList = () => {
+  const { position, isAvailable } = usePosition()
+  const navigate = useNavigate()
+  const { data, isLoading } = useQuery(
+    isAvailable ? QueryKey.GET_AROUND_SPOTS : '',
+    () => {
+      if (position) {
+        return getAroundSpots({
+          geolocation: JSON.stringify(position),
+          radius: 10000,
+        })
+      }
+    },
+    {
+      enabled: isAvailable,
+    }
+  )
+
+  return {
+    data,
+    isLoading,
+    position,
+    navigate,
+  }
 }
 
 const Title = styled.h1`

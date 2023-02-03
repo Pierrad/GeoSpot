@@ -23,13 +23,13 @@ const SpotsList = (props: SpotsListProps) => {
     if (spots) setIsSpot(true)
   }, [spots])
 
-  const renderSpot = (spot: Spot) => {
+  const renderSpot = (spot: Spot, id?: string) => {
     return (
       <SpotItem
         spot={spot}
         key={spot.id}
         onClick={() =>
-          navigate(`/${isSpot ? 'created' : 'discovered'}/${spot.id}`)
+          navigate(`/${isSpot ? 'created' : 'discovered'}/${id ?? spot.id}`)
         }
       />
     )
@@ -40,7 +40,9 @@ const SpotsList = (props: SpotsListProps) => {
   )
 
   const renderDiscoveredSpots = (spots: DiscoveredSpot[]) => (
-    <CustomSpots>{spots?.map((spot) => renderSpot(spot.place))}</CustomSpots>
+    <CustomSpots>
+      {spots?.map((spot) => renderSpot(spot.place, spot.id))}
+    </CustomSpots>
   )
 
   return (

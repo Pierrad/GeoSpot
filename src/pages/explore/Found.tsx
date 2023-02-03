@@ -3,19 +3,51 @@ import { useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { addDiscoveredSpot, getSpot } from '../../api/spot'
+import { QueryKey } from '../../config/keys'
 import AuthLayout from '../../components/AuthLayout'
 import BackButton from '../../components/BackButton'
+import Error from '../../components/Error'
+import Loading from '../../components/Loading'
 import MapView from '../../components/Map'
-import { QueryKey } from '../../config/keys'
 
 const Found = () => {
+  const { data, isLoading, isError, onBackButtonClick } = useFound()
+
+  if (isLoading)
+    return (
+      <AuthLayout>
+        <Loading />
+      </AuthLayout>
+    )
+
+  const { name, creator, geolocation } = data
+
+  return (
+    <AuthLayout>
+      {isError && <Error />}
+      <Title>
+        <BackButton onClick={onBackButtonClick} />
+        {`You found ${name} 🎉`}
+      </Title>
+      <Wrapper>
+        <Creator>{`This spot was created by ${creator.pseudo} on ${new Date(
+          creator.created_at
+        )}`}</Creator>
+
+        <MapView marker={geolocation} />
+      </Wrapper>
+    </AuthLayout>
+  )
+}
+
+const useFound = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [isSubmitted, setIsSubmitted] = useState(false)
 
   const { data, isLoading } = useQuery(QueryKey.GET_SPOT, () => getSpot(id!))
-  const { mutate } = useMutation(addDiscoveredSpot, {
+  const { mutate, isError } = useMutation(addDiscoveredSpot, {
     onSuccess: () => {
       queryClient.invalidateQueries(QueryKey.DISCOVERED_SPOTS)
       queryClient.invalidateQueries(QueryKey.GET_DISCOVERED_SPOT)
@@ -29,25 +61,11 @@ const Found = () => {
     }
   }, [id, isSubmitted, mutate])
 
-  if (isLoading) return <div>Loading...</div>
+  const onBackButtonClick = () => {
+    navigate('/dashboard')
+  }
 
-  const { name, creator, geolocation } = data
-
-  return (
-    <AuthLayout>
-      <Title>
-        <BackButton onClick={() => navigate('/dashboard')} />
-        {`You found ${name} 🎉`}
-      </Title>
-      <Wrapper>
-        <Creator>{`This spot was created by ${creator.pseudo} on ${new Date(
-          creator.created_at
-        )}`}</Creator>
-
-        <MapView marker={geolocation} />
-      </Wrapper>
-    </AuthLayout>
-  )
+  return { data, isLoading, isError, navigate, onBackButtonClick }
 }
 
 const Title = styled.h1`

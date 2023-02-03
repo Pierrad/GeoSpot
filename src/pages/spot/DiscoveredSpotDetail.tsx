@@ -5,28 +5,20 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { getDiscoveredSpot } from '../../api/spot'
 import AuthLayout from '../../components/AuthLayout'
 import BackButton from '../../components/BackButton'
+import Loading from '../../components/Loading'
 import MapView from '../../components/Map'
 import { QueryKey } from '../../config/keys'
-import { DiscoveredSpot as DiscoveredSpotType } from '../../types/types'
 import { getImageUrl } from '../../utils/api'
 
 const Spot = () => {
-  const navigate = useNavigate()
-  const { id } = useParams()
+  const { isLoading, place, date } = useDiscoveredSpotDetail()
 
-  if (!id) navigate('/dashboard')
-
-  const {
-    data: spot,
-    isLoading,
-    error,
-  } = useQuery(QueryKey.GET_DISCOVERED_SPOT, () => getDiscoveredSpot(id!))
-
-  if (isLoading) return <p>Loading...</p>
-
-  if (error) navigate('/dashboard')
-
-  const { date, place }: DiscoveredSpotType = spot
+  if (isLoading)
+    return (
+      <AuthLayout>
+        <Loading />
+      </AuthLayout>
+    )
 
   return (
     <AuthLayout>
@@ -41,6 +33,23 @@ const Spot = () => {
       </Box>
     </AuthLayout>
   )
+}
+
+const useDiscoveredSpotDetail = () => {
+  const navigate = useNavigate()
+  const { id } = useParams()
+
+  if (!id) navigate('/dashboard')
+
+  const {
+    data: spot,
+    isLoading,
+    error,
+  } = useQuery(QueryKey.GET_DISCOVERED_SPOT, () => getDiscoveredSpot(id!))
+
+  if (error) navigate('/dashboard')
+
+  return { isLoading, ...spot }
 }
 
 const Title = styled.h1`

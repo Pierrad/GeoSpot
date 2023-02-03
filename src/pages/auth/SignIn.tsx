@@ -6,13 +6,15 @@ import { Box, TextField } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useMutation, useQueryClient } from 'react-query'
 import { Link, useNavigate } from 'react-router-dom'
+import Error from '../../components/Error'
 
 const SignIn = () => {
-  const { email, password, handleChange, handleSubmit, isLoading } =
+  const { email, password, handleChange, handleSubmit, isLoading, isError } =
     useSignInForm()
 
   return (
     <Layout>
+      {isError && <Error />}
       <Box
         sx={{
           marginTop: 8,
@@ -69,7 +71,7 @@ const useSignInForm = () => {
   const [password, setPassword] = useState('')
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const { isLoading, mutate, data } = useMutation(login, {
+  const { isLoading, mutate, data, isError } = useMutation(login, {
     onSuccess: () => queryClient.invalidateQueries(QueryKey.ME),
   })
 
@@ -100,6 +102,7 @@ const useSignInForm = () => {
     handleChange,
     handleSubmit,
     isLoading,
+    isError,
   }
 }
 

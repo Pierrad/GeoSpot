@@ -24,6 +24,7 @@ export type Spot = {
 }
 
 export type DiscoveredSpot = {
+  id: string
   id_place: string
   id_user: string
   date: string
