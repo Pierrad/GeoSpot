@@ -54,6 +54,7 @@ const Image = styled.img`
 `
 
 const CTA = styled(Button)`
+  z-index: 100;
   background: #f50057;
   border-radius: 999px;
   box-shadow: #f50057 0 10px 20px -10px;
