@@ -1,11 +1,16 @@
 version: '3'
 services:
-    web:
+    front:
+        hostname: webapp
         build: 
             context: ./
             dockerfile: Dockerfile
+        ports:
+            - 4173:4173
         volumes:
             - /usr/src/web/node_modules
+        networks:
+            - web
     nginx:
         container_name: nginx
         restart: unless-stopped
@@ -17,6 +22,8 @@ services:
             - ./nginx/nginx.conf:/etc/nginx/nginx.conf
             - ./certbot/conf:/etc/letsencrypt
             - ./certbot/www:/var/www/certbot
+        networks:
+            - web
     certbot:
         image: certbot/certbot
         container_name: certbot
@@ -25,3 +32,5 @@ services:
             - ./certbot/www:/var/www/certbot
         command: certonly --webroot -w /var/www/certbot --force-renewal --email pierreadrien.vasseur@gmail.com -d pierrad.fr --agree-tos
 
+networks:
+    web:
