@@ -31,24 +31,19 @@ const ThreeArrow = (props: ArrowProps) => {
 
     // in radians
     arrowRef.current.rotation.z = clockwiseAngle * (Math.PI / 180)
-
-    console.log('-----------------')
   })
 
   return (
-    <group>
-      <axesHelper />
-      <mesh ref={arrowRef} position={[0, 2, 0]} scale={[0.3, 0.3, 0.3]}>
-        <mesh position={[0, 1, 0]}>
-          <cylinderGeometry args={[1, 1, 3, 20]} />
-          <meshBasicMaterial />
-        </mesh>
-        <mesh position={[0, 3, 0]}>
-          <coneGeometry args={[2, 3, 20]} />
-          <meshBasicMaterial />
-        </mesh>
+    <mesh ref={arrowRef} position={[0, 2, 0]} scale={[0.3, 0.3, 0.3]}>
+      <mesh position={[0, 1, 0]}>
+        <cylinderGeometry args={[1, 1, 3, 20]} />
+        <meshBasicMaterial />
       </mesh>
-    </group>
+      <mesh position={[0, 3, 0]}>
+        <coneGeometry args={[2, 3, 20]} />
+        <meshBasicMaterial />
+      </mesh>
+    </mesh>
   )
 }
 
