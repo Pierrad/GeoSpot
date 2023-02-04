@@ -42,10 +42,10 @@ const Explore = () => {
 
   return (
     <AuthLayout>
-      <Title>
+      <TitleContainer>
         <BackButton />
-        {`You are looking for ${spot?.name}`}
-      </Title>
+        <Title>{`You are looking for ${spot?.name}`}</Title>
+      </TitleContainer>
       <Wrapper>
         <Distance>{`You are ${distance} km away from ${spot?.name}`}</Distance>
         <Scene>
@@ -127,6 +127,11 @@ const useExplore = () => {
     requestIOSPermission,
   }
 }
+
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+`
 
 const Title = styled.h1`
   font-size: 1.6rem;

@@ -12,7 +12,7 @@ const BackButton = (props: BackButtonProps) => {
   return (
     <IconButton
       onClick={() => (onClick ? onClick() : navigate(-1))}
-      sx={{ mb: 1 }}
+      sx={{ mb: 0 }}
     >
       <KeyboardBackspaceIcon />
     </IconButton>
