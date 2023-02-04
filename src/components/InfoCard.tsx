@@ -6,13 +6,18 @@ type InfoCardProps = {
   color?: string
   text: string
   value: string
+  onClick: () => void
 }
 
 const InfoCard = (props: InfoCardProps) => {
-  const { className, backgroundColor, color, text, value } = props
+  const { className, backgroundColor, color, text, value, onClick } = props
 
   return (
-    <Card className={className} backgroundColor={backgroundColor}>
+    <Card
+      className={className}
+      backgroundColor={backgroundColor}
+      onClick={onClick}
+    >
       <Value color={color}>{value}</Value>
       <Text>{text}</Text>
     </Card>
@@ -41,6 +46,9 @@ const Text = styled.p`
   font-size: 1.2rem;
   margin: 0;
   text-align: center;
+  min-height: 4rem;
+  display: flex;
+  align-items: center;
 `
 
 export default InfoCard

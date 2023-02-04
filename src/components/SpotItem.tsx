@@ -48,6 +48,7 @@ const SpotPin = styled.span`
 const SpotContent = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
 `
 
 const SpotName = styled.p`

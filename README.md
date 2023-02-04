@@ -37,3 +37,7 @@ To deploy the app, run the following command:
 ```bash
 npm run build
 ```
+
+## Notes
+
+The backend code is available [here](https://github.com/Pierrad/GeoSpot_API).

@@ -2,9 +2,19 @@ import Layout from '../components/Layout'
 import { useNavigate } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { Button } from '@mui/material'
+import useAuth from '../hooks/useAuth'
+import { useEffect } from 'react'
 
 const Home = () => {
   const navigate = useNavigate()
+  const { user } = useAuth()
+
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard')
+    }
+  })
+
   return (
     <Layout>
       <Container>

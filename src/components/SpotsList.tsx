@@ -11,11 +11,13 @@ type SpotsListProps = {
   title: string
   spots?: Spot[]
   discoveredSpots?: DiscoveredSpot[]
+  isExpanded: boolean
+  onClick: () => void
 }
 
 const SpotsList = (props: SpotsListProps) => {
-  const { className, title, spots, discoveredSpots } = props
-  const [isExpanded, setIsExpanded] = useState<boolean>(false)
+  const { className, title, spots, discoveredSpots, isExpanded, onClick } =
+    props
   const [isSpot, setIsSpot] = useState<boolean>(false)
   const navigate = useNavigate()
 
@@ -46,7 +48,7 @@ const SpotsList = (props: SpotsListProps) => {
   )
 
   return (
-    <Card className={className} onClick={() => setIsExpanded(!isExpanded)}>
+    <Card className={className} onClick={onClick}>
       <Title>{title}</Title>
       {spots && isExpanded && renderSpots(spots)}
       {discoveredSpots && isExpanded && renderDiscoveredSpots(discoveredSpots)}

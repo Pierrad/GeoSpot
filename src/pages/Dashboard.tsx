@@ -1,6 +1,6 @@
 import AuthLayout from '../components/AuthLayout'
 import styled from '@emotion/styled'
-import { Box, Button } from '@mui/material'
+import { Box } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 import InfoCard from '../components/InfoCard'
@@ -8,10 +8,15 @@ import { QueryKey } from '../config/keys'
 import { useQuery } from 'react-query'
 import { getCreatedSpots, getDiscoveredSpots } from '../api/spot'
 import SpotsList from '../components/SpotsList'
+import { useState } from 'react'
+import GameButton from '../components/GameButton'
 
 const Dashboard = () => {
   const navigate = useNavigate()
   const { user } = useAuth()
+  const [isCreatedSpotsExpanded, setIsCreatedSpotsExpanded] = useState(false)
+  const [isDiscoveredSpotsExpanded, setIsDiscoveredSpotsExpanded] =
+    useState(false)
   const { data: discoveredSpots } = useQuery(
     QueryKey.DISCOVERED_SPOTS,
     getDiscoveredSpots
@@ -33,12 +38,16 @@ const Dashboard = () => {
               discoveredSpots?.length === 1 ? 'spot' : 'spots'
             } discovered`}
             value={discoveredSpots?.length ?? 0}
+            onClick={() =>
+              setIsDiscoveredSpotsExpanded(!isDiscoveredSpotsExpanded)
+            }
           />
           <CustomInfoCard
             backgroundColor="#f5f5f5"
             color="#4271ff"
             text={`${createdSpots?.length === 1 ? 'spot' : 'spots'} created`}
             value={createdSpots?.length ?? 0}
+            onClick={() => setIsCreatedSpotsExpanded(!isCreatedSpotsExpanded)}
           />
         </InfoCards>
         <CTAs>
@@ -53,10 +62,19 @@ const Dashboard = () => {
           <CustomSpotList
             title="Discovered spots"
             discoveredSpots={discoveredSpots}
+            isExpanded={isDiscoveredSpotsExpanded}
+            onClick={() =>
+              setIsDiscoveredSpotsExpanded(!isDiscoveredSpotsExpanded)
+            }
           />
         )}
         {createdSpots && createdSpots?.length > 0 && (
-          <CustomSpotList title="Your spots" spots={createdSpots} />
+          <CustomSpotList
+            title="Your spots"
+            spots={createdSpots}
+            isExpanded={isCreatedSpotsExpanded}
+            onClick={() => setIsCreatedSpotsExpanded(!isCreatedSpotsExpanded)}
+          />
         )}
       </Box>
     </AuthLayout>
@@ -66,6 +84,8 @@ const Dashboard = () => {
 const Title = styled.h1`
   font-size: 1.6rem;
   margin: 0.5rem 0;
+  text-align: center;
+  color: #757575;
 `
 
 const InfoCards = styled.div`
@@ -95,39 +115,7 @@ const CustomSpotList = styled(SpotsList)`
   margin: 2rem 0 0 0;
 `
 
-const CTA = styled(Button)`
-  align-items: center;
-  appearance: none;
-
-  border: 0;
-  border-radius: 6px;
-  box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,
-    rgba(45, 35, 66, 0.3) 0 7px 13px -3px, rgba(58, 65, 111, 0.5) 0 -3px 0 inset;
-  box-sizing: border-box;
-  color: #fff;
-  cursor: pointer;
-  display: inline-flex;
-  font-family: 'JetBrains Mono', monospace;
-  height: 48px;
-  justify-content: center;
-  line-height: 1;
-  list-style: none;
-  overflow: hidden;
-  padding-left: 16px;
-  padding-right: 16px;
-  position: relative;
-  text-align: left;
-  text-decoration: none;
-  transition: box-shadow 0.15s, transform 0.15s;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  white-space: nowrap;
-  will-change: box-shadow, transform;
-  font-size: 18px;
-`
-
-const CreateCTA = styled(CTA)`
+const CreateCTA = styled(GameButton)`
   background-image: radial-gradient(
     100% 100% at 100% 0,
     #5adaff 0,
@@ -135,7 +123,7 @@ const CreateCTA = styled(CTA)`
   );
 `
 
-const ExploreCTA = styled(CTA)`
+const ExploreCTA = styled(GameButton)`
   background-image: radial-gradient(
     100% 100% at 100% 0,
     #ff5a5a 0,

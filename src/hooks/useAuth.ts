@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import { me } from '../api/auth'
@@ -14,9 +15,11 @@ const useAuth = (): UseAuth => {
   const { data, error, isLoading } = useQuery(QueryKey.ME, me)
   const token = localStorage.getItem('token')
 
-  if (!token || error) {
-    navigate('/signin')
-  }
+  useEffect(() => {
+    if (!token || error) {
+      navigate('/signin')
+    }
+  }, [error, navigate, token])
 
   const user = data?.user
 

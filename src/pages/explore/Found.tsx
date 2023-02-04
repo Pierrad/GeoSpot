@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import { useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
+import { Fireworks } from '@fireworks-js/react'
 import { addDiscoveredSpot, getSpot } from '../../api/spot'
 import { QueryKey } from '../../config/keys'
 import AuthLayout from '../../components/AuthLayout'
@@ -11,7 +12,8 @@ import Loading from '../../components/Loading'
 import MapView from '../../components/Map'
 
 const Found = () => {
-  const { data, isLoading, isError, onBackButtonClick } = useFound()
+  const { data, isLoading, isError, onBackButtonClick, showFireworks } =
+    useFound()
 
   if (isLoading)
     return (
@@ -27,14 +29,31 @@ const Found = () => {
       {isError && <Error />}
       <Title>
         <BackButton onClick={onBackButtonClick} />
-        {`You found ${name} 🎉`}
+        {`You found ${name}`}
       </Title>
       <Wrapper>
         <Creator>{`This spot was created by ${creator.pseudo} on ${new Date(
           creator.created_at
-        )}`}</Creator>
-
+        ).toLocaleDateString('en-US')}`}</Creator>
         <MapView marker={geolocation} />
+        {showFireworks && (
+          <Fireworks
+            options={{
+              rocketsPoint: {
+                min: 0,
+                max: 100,
+              },
+            }}
+            style={{
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              position: 'fixed',
+              background: 'transparent',
+            }}
+          />
+        )}
       </Wrapper>
     </AuthLayout>
   )
@@ -45,6 +64,7 @@ const useFound = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [showFireworks, setShowFireworks] = useState(true)
 
   const { data, isLoading } = useQuery(QueryKey.GET_SPOT, () => getSpot(id!))
   const { mutate, isError } = useMutation(addDiscoveredSpot, {
@@ -61,11 +81,26 @@ const useFound = () => {
     }
   }, [id, isSubmitted, mutate])
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShowFireworks(false)
+    }, 5000)
+
+    return () => clearTimeout(timeout)
+  }, [])
+
   const onBackButtonClick = () => {
     navigate('/dashboard')
   }
 
-  return { data, isLoading, isError, navigate, onBackButtonClick }
+  return {
+    data,
+    isLoading,
+    isError,
+    navigate,
+    onBackButtonClick,
+    showFireworks,
+  }
 }
 
 const Title = styled.h1`

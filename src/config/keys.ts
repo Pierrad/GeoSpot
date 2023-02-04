@@ -6,4 +6,5 @@ export enum QueryKey {
   GET_CREATED_SPOT = 'getCreatedSpot',
   GET_DISCOVERED_SPOT = 'getDiscoveredSpot',
   GET_AROUND_SPOTS = 'getAroundSpots',
+  GET_ROUTE_TO_DESTINATION = 'getRouteToDestination',
 }
