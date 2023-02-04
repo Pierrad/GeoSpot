@@ -29,10 +29,10 @@ const ExploreList = () => {
 
   return (
     <AuthLayout>
-      <Title>
+      <TitleContainer>
         <BackButton />
-        Explore 🌎
-      </Title>
+        <Title>Explore the world 🌎</Title>
+      </TitleContainer>
       <Spots>
         {data?.map((spot: Spot) => (
           <CustomSpot
@@ -73,6 +73,11 @@ const useExploreList = () => {
     navigate,
   }
 }
+
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+`
 
 const Title = styled.h1`
   font-size: 1.6rem;
