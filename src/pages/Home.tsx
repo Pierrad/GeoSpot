@@ -2,15 +2,14 @@ import Layout from '../components/Layout'
 import { useNavigate } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { Button } from '@mui/material'
-import useAuth from '../hooks/useAuth'
 import { useEffect } from 'react'
 
 const Home = () => {
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const token = localStorage.getItem('token')
 
   useEffect(() => {
-    if (user) {
+    if (token) {
       navigate('/dashboard')
     }
   })

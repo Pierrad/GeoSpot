@@ -13,9 +13,18 @@ import BackButton from '../../components/BackButton'
 import Loading from '../../components/Loading'
 import ThreeArrow from '../../components/threejs/ThreeArrow'
 import ThreeCanvas from '../../components/threejs/ThreeCanvas'
+import Alert from '../../components/Alert'
 
 const Explore = () => {
-  const { isLoading, position, orientation, spot, distance } = useExplore()
+  const {
+    isLoading,
+    position,
+    orientation,
+    spot,
+    distance,
+    mustRequestPermission,
+    requestIOSPermission,
+  } = useExplore()
 
   if (isLoading)
     return (
@@ -58,6 +67,15 @@ const Explore = () => {
             />
           </Canvas>
         </Scene>
+        {mustRequestPermission && (
+          <Alert
+            open={mustRequestPermission}
+            handleClose={requestIOSPermission}
+            onAgree={requestIOSPermission}
+            title="Permission needed"
+            text="We need your permission to use your device orientation"
+          />
+        )}
       </Wrapper>
     </AuthLayout>
   )
@@ -67,7 +85,8 @@ const useExplore = () => {
   const navigate = useNavigate()
   const { id } = useParams()
   const { position } = usePosition()
-  const orientation = useOrientation()
+  const { orientation, mustRequestPermission, requestIOSPermission } =
+    useOrientation()
   const [distance, setDistance] = useState<number>(-1)
 
   const { data: spot, isLoading } = useQuery(QueryKey.GET_SPOT, () =>
@@ -104,6 +123,8 @@ const useExplore = () => {
     orientation,
     spot,
     distance,
+    mustRequestPermission,
+    requestIOSPermission,
   }
 }
 
