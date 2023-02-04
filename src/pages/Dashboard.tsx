@@ -82,7 +82,7 @@ const Dashboard = () => {
 }
 
 const Title = styled.h1`
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   margin: 0.5rem 0;
   text-align: center;
   color: #757575;
